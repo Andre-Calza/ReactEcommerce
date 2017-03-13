@@ -15,6 +15,36 @@ export var toggleShowCompleted = () => {
   };
 };
 
+export var addProdutos = (produtos) => {
+  return {
+    type: 'ADD_PRODUTOS',
+    produtos
+  };
+};
+
+export var consultarProdutos = () => {
+  return (dispatch, getState) => {
+    var produtosRef = firebaseRef.child(`produtos`);
+
+    return produtosRef.once('value').then((snapshot) => {
+      var produtos = snapshot.val() || {};
+      var parsedProdutos = [];
+      // console.log('produtos', produtos);
+
+      Object.keys(produtos).forEach((nome) => {
+        parsedProdutos.push({
+          ...produtos[nome]
+        });
+      });
+      // console.log('parsedProdutos', parsedProdutos);
+      dispatch(addProdutos(parsedProdutos));
+      return parsedProdutos;
+    });
+  };
+};
+
+
+
 //Metodos relacionados a usuarios
 //Gravar novo usuario
 export var addUsuario = (arrUsuario) => {

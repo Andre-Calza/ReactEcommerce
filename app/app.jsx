@@ -11,6 +11,8 @@ import router from 'app/router/';
 // Load foundation
 $(document).foundation();
 
+store.dispatch(actions.consultarProdutos());
+
 // App css
 require('style!css!sass!applicationStyles')
 

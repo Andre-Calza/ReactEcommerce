@@ -52,6 +52,11 @@ export var produtosReducer = (state = [], action) =>{
         ...state,
         action.arrProduto
       ];
+    case 'ADD_PRODUTOS':
+      return [
+        ...state,
+        ...action.produtos
+      ];
     default:
       return state;
   }
