@@ -57,7 +57,7 @@ module.exports = {
       reducers: 'app/reducers/reducers.jsx',
       configureStore: 'app/store/configureStore.jsx'
     },
-    extensions: ['', '.js', '.jsx', 'jpg']
+    extensions: ['', '.js', '.jsx', 'jpg', 'png']
   },
   module: {
     loaders: [
