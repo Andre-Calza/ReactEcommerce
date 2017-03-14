@@ -35,15 +35,17 @@ export class Vitrine extends React.Component {
       });
       if(this.state === null){
         return(
-          <p>Carregando</p>
+          <div className="loader-vitrine">
+              <img src='img/loader.gif'/>
+          </div>
+
         );
       }else{
            var listaProdutos = this.state.Produtos;
 
            return listaProdutos.map((produto) => {
-             //console.log('produto apos o map', produto);
              return (
-               <Produto nome={produto.nome} fotoUrl={produto.fotoUrl} preco={produto.preco} />
+               <Produto {...produto} />
              );
            });
       }

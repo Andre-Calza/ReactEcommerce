@@ -19,6 +19,21 @@ export var showCompletedReducer = (state = false, action) => {
   }
 };
 
+//Carrinho
+export var produtoCarrinhoReducer = (state = [], action) => {
+  switch (action.type) {
+    case 'ADD_PRODUTO_CARRINHO':
+    console.log('state', state);
+      return [
+        ...state,
+        action.arrProduto
+      ];
+    default:
+      return state;
+  }
+};
+//Carrinho
+
 //Usuarios
 export var usuariosReducer = (state = [], action) =>{
   switch (action.type) {

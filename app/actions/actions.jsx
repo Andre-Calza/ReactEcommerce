@@ -15,12 +15,7 @@ export var toggleShowCompleted = () => {
   };
 };
 
-export var addProdutos = (produtos) => {
-  return {
-    type: 'ADD_PRODUTOS',
-    produtos
-  };
-};
+
 
 export var consultarProdutos = () => {
   return (dispatch, getState) => {
@@ -31,9 +26,10 @@ export var consultarProdutos = () => {
       var parsedProdutos = [];
       // console.log('produtos', produtos);
 
-      Object.keys(produtos).forEach((nome) => {
+      Object.keys(produtos).forEach((produtoId) => {
         parsedProdutos.push({
-          ...produtos[nome]
+          id: produtoId,
+          ...produtos[produtoId]
         });
       });
       // console.log('parsedProdutos', parsedProdutos);
@@ -43,6 +39,32 @@ export var consultarProdutos = () => {
   };
 };
 
+
+//Metodos relacionados a Carrinho
+//Add ao carrinho
+export var addProdutoCarrinho = (arrProduto) => {
+  return{
+    type: "ADD_PRODUTO_CARRINHO",
+    arrProduto
+  };
+};
+
+export var startAddProdutoCarrinho = (id, nome, preco, fotoUrl) => {
+    return (dispatch, getState) => {
+      var arrProduto = {
+        id,
+        nome,
+        preco,
+        fotoUrl
+      };
+      console.log('arrProdutoCarrinho', arrProduto);
+    return dispatch(addProdutoCarrinho({
+        ...arrProduto
+      }));
+
+  };
+};
+//Metodos relacionados a Carrinho
 
 
 //Metodos relacionados a usuarios
@@ -97,6 +119,13 @@ export var updateUsuario = (id, arrUsuario) =>{
 //Metodos relacionados a produtos
 
 //Gravar novo
+export var addProdutos = (produtos) => {
+  return {
+    type: 'ADD_PRODUTOS',
+    produtos
+  };
+};
+
 export var addProduto = (arrProduto) => {
   return{
     type: "ADD_PRODUTO",
@@ -119,10 +148,10 @@ export var startAddProduto = (nome, preco, fotoUrl ) => {
 
     return produtoRef.then(()=>{
       //console.log('Cadastro de produto com sucesso no firebase', produtoRef.key);
-      dispatch(addProduto({
+      return ( dispatch(addProduto({
         ...arrProduto,
         id: produtoRef.key
-      }));
+      })));
     });
   };
 };

@@ -11,7 +11,19 @@ export class CadastroProduto extends React.Component {
     var preco = this.refs.preco.value;
     var fotoUrl = this.refs.fotoUrl.value;
 
-    dispatch(actions.startAddProduto(nome, preco, fotoUrl));
+  var obj =  dispatch(actions.startAddProduto(nome, preco, fotoUrl)).then((produto)=>{
+    //console.log('produto cadastrado: ', produto);
+  });
+
+  // console.log('Retorno do insert', obj);
+  //
+  // obj.then((produto)=> {
+  //   console.log('nome', produto.nome);
+  //   console.log('preco', produto.preco);
+  //   console.log('foto', produto.fotoUrl);
+  //   console.log('id', produto.id);
+  // });
+
 
   }
   render () {
