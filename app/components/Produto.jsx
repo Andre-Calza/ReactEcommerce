@@ -9,13 +9,8 @@ export class Produto extends React.Component {
   handleSubmit (e) {
     var {dispatch} = this.props;
     e.preventDefault();
-    //console.log('Clicado no botao add carrinho:', this.props.id);
-    //  <Carrinho idProduto={this.props.id} />
-
     var {id ,nome, preco, fotoUrl} = this.props;
-
     var obj =  dispatch(actions.startAddProdutoCarrinho(id ,nome, preco, fotoUrl));
-    console.log('obj', obj);
 
     return (
       <Carrinho id={id} nome={nome} />

@@ -15,8 +15,6 @@ export var toggleShowCompleted = () => {
   };
 };
 
-
-
 export var consultarProdutos = () => {
   return (dispatch, getState) => {
     var produtosRef = firebaseRef.child(`produtos`);
@@ -57,13 +55,43 @@ export var startAddProdutoCarrinho = (id, nome, preco, fotoUrl) => {
         preco,
         fotoUrl
       };
-      console.log('arrProdutoCarrinho', arrProduto);
-    return dispatch(addProdutoCarrinho({
-        ...arrProduto
-      }));
+    console.log('arrProdutoCarrinho', arrProduto);
+    var uid = getState().auth.uid;
+    uid = '-KfMgUZbOEinc1J-DAj9';
 
+    var usuarioRef = firebaseRef.child(`usuarios/${uid}/carrinho`).push(arrProduto);
+    return usuarioRef.then(()=>{
+      return dispatch(addProdutoCarrinho({
+          ...arrProduto
+        }));
+    });
   };
 };
+//
+export var consultarCarrinho = (idUsuario) => {
+  return (dispatch, getState) => {
+
+    var carrinhoRef = firebaseRef.child(`usuarios/${idUsuario}/carrinho`); //<- consulta o usuario
+
+    return carrinhoRef.once('value').then((snapshot) => {
+      var carrinho = snapshot.val() || {};
+      var parsedProdutos = [];
+      // /console.log('objCarrinho', carrinho);
+
+      Object.keys(carrinho).forEach((id) => {
+        parsedProdutos.push({
+          ...carrinho[id]
+        });
+      });
+      // console.log('parsedProdutos', parsedProdutos);
+      //dispatch(addProdutos(parsedProdutos));
+      return parsedProdutos;
+    });
+  };
+};
+
+
+
 //Metodos relacionados a Carrinho
 
 

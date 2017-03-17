@@ -8,23 +8,61 @@ export class Carrinho extends React.Component {
   render () {
     getInitialState: () => {
       return{
-        ProdutosCarrinho: []
+        ProdutosCarrinho: [],
+        TotalCarrinho: 0
       }
     };
 
     var renderCarrinhoProdutos = () => {
+      var {dispatch} = this.props;
+      var that = this;
+
+      var listaCarrinho = dispatch(actions.consultarCarrinho('-KfMgUZbOEinc1J-DAj9'));
+
+
+      listaCarrinho.then((e)=>{
+        //console.log('e', e);
+        var auxTotal = 0;
+        e.map((Prod)=>{
+          auxTotal = Number(Math.round((parseFloat(auxTotal) + parseFloat(Prod.preco))+'e2')+'e-2').toFixed(2)
+        })
+        that.setState({
+            ProdutosCarrinho: e,
+            TotalCarrinho: auxTotal
+        });
+      });
+
       if(this.state === null){
         //State vazio
         return(<p>Carrinho vazio</p>);
       }
       else{
-        var {id, nome, preco, fotoUrl} = this.props;
-
         //State não esta vazio
-        return(<p>{id}, {nome}</p>);
+        var listaProdutos = this.state.ProdutosCarrinho;
+
+        return listaProdutos.map((produto) => {
+          return (
+            <span>
+              <ItemCarrinho {...produto} />
+            </span>
+          );
+        });
       }
     };
+    var calculaTotalCarrinho = () =>{
+        var auxTotalCarrinho = 0;
+
+        if(this.state !== null){
+          //State não esta vazio
+          var Total = this.state.TotalCarrinho;
+        }
+
+        return (
+          Total
+        );
+    };
     return (
+
       <div className="row">
         <div className="medium-10 columns carrinho">
             <div className="titulo-carrinho">
@@ -34,10 +72,8 @@ export class Carrinho extends React.Component {
             <div className="medium-12 columns lista-itens-carrinho">
               {renderCarrinhoProdutos()}
             </div>
-
-
             <div className="total-carrinho">
-              Total: R$ 100,00 <button className="button">Finalizar</button>
+              Total: R$ {calculaTotalCarrinho()} <button className="button">Finalizar</button>
             </div>
         </div>
       </div>
