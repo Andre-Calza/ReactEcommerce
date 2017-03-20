@@ -49,29 +49,100 @@ export var addProdutoCarrinho = (arrProduto) => {
 
 export var startAddProdutoCarrinho = (id, nome, preco, fotoUrl) => {
     return (dispatch, getState) => {
-      var arrProduto = {
-        id,
-        nome,
-        preco,
-        fotoUrl
-      };
-    console.log('arrProdutoCarrinho', arrProduto);
-    var uid = getState().auth.uid;
-    uid = '-KfMgUZbOEinc1J-DAj9';
+      var uid = getState().auth.uid;
+      var usuarioRef;
+      var blnNovo = false;
+      var qtd = 0;
+      uid = '-KfMgUZbOEinc1J-DAj9';
+      //console.log('Entrando na função startAddProdutoCarrinho');
+      //Consultar o carrinho do usuario para ver se já possui um produto igual
+      //Se possuir, somar +1 na quantidade
+      //Senao criar do zero com a quatidade 1
+      //console.log('Antes da chamada consultarCarrinho');
+      var carrinhoUsuario = dispatch(consultarCarrinho(uid));
+      //console.log('Depois da chamada consultarCarrinho');
 
-    var usuarioRef = firebaseRef.child(`usuarios/${uid}/carrinho`).push(arrProduto);
-    return usuarioRef.then(()=>{
-      return dispatch(addProdutoCarrinho({
-          ...arrProduto
-        }));
-    });
+
+      carrinhoUsuario.then((e)=>{
+        //console.log('Dentro da condição then');
+        if(e.length > 0){
+          // console.log('Dentro da condição verdadeira length > 0');
+          //console.log('length', e.length);
+          for(var i=0; i < e.length; i++){
+            console.log('produto', e[i].id);
+            if(e[i].id === id){
+              blnNovo = true;
+              qtd = parseInt(e[i].qtd) + 1;
+              i = e.length;
+            }
+          }
+        }else{
+          // console.log('Dentro da condição falsa length > 0');
+          //Primeiro produto
+          //Fazer push no firebase
+          //console.log('Primeiro produto');
+          var arrProduto = {
+            id,
+            nome,
+            preco,
+            fotoUrl,
+            qtd: 1
+          };
+          console.log('gravando carrinho', 'usuarios/', uid, '/carrinho/', id );
+          usuarioRef = firebaseRef.child(`usuarios/${uid}/carrinho/${id}`).set({
+           ...arrProduto
+          });
+
+          //usuarioRef = firebaseRef.child(`usuarios/${uid}/carrinho`).push(arrProduto);
+          return usuarioRef.then(()=>{
+            return dispatch(addProdutoCarrinho({
+                ...arrProduto
+              }));
+          });
+        }
+        //console.log('Valor da variavel blnNovo antes do if dela', blnNovo);
+        // console.log('Antes do if blnNovo');
+        // console.log('valor da variavel blnNovo', blnNovo);
+        if(!blnNovo){
+          // console.log('Dentro da condição falsa blnNovo');
+          console.log('Não tem o produto, grava!');
+          var arrProduto = {
+            id,
+            nome,
+            preco,
+            fotoUrl,
+            qtd: 1
+          };
+
+          console.log('gravando carrinho', 'usuarios/', uid, '/carrinho/', id );
+          usuarioRef = firebaseRef.child(`usuarios/${uid}/carrinho/${id}`).set({
+           ...arrProduto
+          });
+
+          //usuarioRef = firebaseRef.child(`usuarios/${uid}/carrinho`).push(arrProduto);
+          return usuarioRef.then(()=>{
+            return dispatch(addProdutoCarrinho({
+                ...arrProduto
+              }));
+          });
+        }else {
+          // console.log('Dentro da condição verdadeira blnNovo');
+          //Ja tem o produto
+          console.log('atualizando qtd no carrinho', 'usuarios/', uid, '/carrinho/', id , 'quatidade', qtd);
+          //atualiza evento
+
+           firebaseRef.child(`usuarios/${uid}/carrinho/${id}`).update({
+             qtd: qtd
+           });
+        }
+      });
   };
 };
 //
 export var consultarCarrinho = (idUsuario) => {
   return (dispatch, getState) => {
 
-    var carrinhoRef = firebaseRef.child(`usuarios/${idUsuario}/carrinho`); //<- consulta o usuario
+    var carrinhoRef = firebaseRef.child(`usuarios/${idUsuario}/carrinho`); //<- consulta carrinho do usuario
 
     return carrinhoRef.once('value').then((snapshot) => {
       var carrinho = snapshot.val() || {};

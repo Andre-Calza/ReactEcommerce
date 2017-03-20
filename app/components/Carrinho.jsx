@@ -24,7 +24,7 @@ export class Carrinho extends React.Component {
         //console.log('e', e);
         var auxTotal = 0;
         e.map((Prod)=>{
-          auxTotal = Number(Math.round((parseFloat(auxTotal) + parseFloat(Prod.preco))+'e2')+'e-2').toFixed(2)
+          auxTotal = Number(Math.round((parseFloat(auxTotal) + parseFloat(Prod.preco) * parseInt(Prod.qtd))+'e2')+'e-2').toFixed(2)
         })
         that.setState({
             ProdutosCarrinho: e,

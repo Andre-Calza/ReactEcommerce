@@ -5,14 +5,14 @@ var actions = require('actions');
 
 export class ItemCarrinho extends React.Component {
   render () {
-    var {nome, preco} = this.props;
+    var {nome, preco, qtd} = this.props;
     return (
       <div className="itens-carrinho">
         <div>
           <div>
               <label className="nome-item-carrinho">{nome} </label>
               <div className="preco-item-carrinho">
-                <label>1x R$ {preco}</label>
+                <label>{qtd} x R$ {preco}</label>
               </div>
           </div>
         </div>
