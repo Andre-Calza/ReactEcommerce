@@ -3,6 +3,7 @@ var {connect} = require('react-redux');
 var moment = require('moment');
 var actions = require('actions');
 import ItemCarrinho from 'ItemCarrinho';
+import firebase, {firebaseRef, facebookProvider} from 'app/firebase/';
 
 export class Carrinho extends React.Component {
   render () {
@@ -16,21 +17,35 @@ export class Carrinho extends React.Component {
     var renderCarrinhoProdutos = () => {
       var {dispatch} = this.props;
       var that = this;
+      var usuarioLogado;
 
-      var listaCarrinho = dispatch(actions.consultarCarrinho('-KfMgUZbOEinc1J-DAj9'));
-
-
-      listaCarrinho.then((e)=>{
-        //console.log('e', e);
-        var auxTotal = 0;
-        e.map((Prod)=>{
-          auxTotal = Number(Math.round((parseFloat(auxTotal) + parseFloat(Prod.preco) * parseInt(Prod.qtd))+'e2')+'e-2').toFixed(2)
-        })
-        that.setState({
-            ProdutosCarrinho: e,
-            TotalCarrinho: auxTotal
-        });
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          // User is signed in.
+          usuarioLogado = user;
+          
+          var listaCarrinho = dispatch(actions.consultarCarrinho(usuarioLogado.uid));
+          listaCarrinho.then((e)=>{
+            //console.log('e', e);
+            var auxTotal = 0;
+            e.map((Prod)=>{
+              auxTotal = Number(Math.round((parseFloat(auxTotal) + parseFloat(Prod.preco) * parseInt(Prod.qtd))+'e2')+'e-2').toFixed(2)
+            })
+            that.setState({
+                ProdutosCarrinho: e,
+                TotalCarrinho: auxTotal
+            });
+          });
+        } else {
+          // No user is signed in.
+          console.log('Nenhum usuario logado');
+        }
       });
+
+
+      if(usuarioLogado !== undefined) {
+
+      }
 
       if(this.state === null){
         //State vazio

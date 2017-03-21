@@ -7,6 +7,7 @@ import Main from 'Main';
 import Carrinho from 'Carrinho';
 import CadastroUsuario from 'CadastroUsuario';
 import CadastroProduto from 'CadastroProduto';
+import Login from 'Login';
 import Master from 'Master';
 
 export default (
@@ -15,6 +16,7 @@ export default (
       <Route path="carrinho" component={Carrinho}/>
       <Route path="cadastrousuario" component={CadastroUsuario}/>
       <Route path="cadastroproduto" component={CadastroProduto}/>
+      <Route path="login" component={Login}/>
       <IndexRoute component={Master}/>
     </Route>
   </Router>
